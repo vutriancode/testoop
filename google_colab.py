@@ -51,6 +51,7 @@ def ColabSimple():
         try:
           # h=h+1
           keyword = cl.find_one_and_delete({})
+          print(keyword)
           if keyword:
                 if keyword["campaign"]["language"] == "vi":
                   try:
