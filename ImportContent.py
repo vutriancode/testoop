@@ -406,6 +406,9 @@ def importcontent(content):
 
         campaign_root.update_one({"_id":ObjectId( content['user']["campaign"]["_id"])},{"$set":{"Top10url":url["Top10url"]}})
         keywords[content['user']['campaign']["WebsiteId"]].update_one({"_id":ObjectId( content['user']["keyword"]["_id"])},{"$set":{"status":"done","link":content['user']["web_info"]["Website"] +"/"+ post['slug']}})
+    if res==None:
+        print(response.content)
+        print(res)
     return True
 
 def ImportContents(article,url):
