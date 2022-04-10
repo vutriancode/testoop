@@ -57,7 +57,9 @@ def ColabSimple():
                 if keyword["campaign"]["language"] == "vi":
                   try:
                     h = 0
-                    for i in search(keyword["keyword"]["Keyword"], tld="com.vn",start=0, num=20,stop=20,pause=1,user_agent=random.choice(userAgents),lang="vi",country="vn"):
+                    searchlist = search(keyword["keyword"]["Keyword"], tld="com.vn",start=0, num=20,stop=20,pause=1,user_agent=random.choice(userAgents),lang="vi",country="vn")
+                    print(len(searchlist))
+                    for i in searchlist:
                       i = i.split("#")[0]
 
                       h = h+1
