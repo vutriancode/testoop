@@ -1,6 +1,5 @@
 from newspaper import Config
 from sys import prefix
-from pymongo import MongoClient
 import time
 import html.parser    
 import requests
@@ -21,7 +20,6 @@ import html
 import html.parser  
 from Settings import *
 from bson import ObjectId
-from pymongo import MongoClient
 import time
 from PIL import Image
 import io
@@ -52,8 +50,6 @@ def no_accent_vietnamese(s):
 spinService = SpinService()
 
 config = Config()
-campaign_root  = MongoClient(CONNECTION_STRING_MGA1).campaigns.data
-keywords  = MongoClient(CONNECTION_STRING_MGA1).keywords
 
 contentExtractor = ContentExtractor(config)
 from bs4 import BeautifulSoup
@@ -84,45 +80,6 @@ def process_content(article,url):
         src_img = []
         pre_link = None
         for i in img:
-            # try:
-            #     i.replace_with(replace_attr(i,'data-src', 'src'))
-            #     i.replace_with(replace_attr(i,'data-lazy-src', 'src'))
-            #     i.replace_with(replace_attr(i,'lazy-src', 'src'))
-            #     i.replace_with(replace_attr(i,'data-srcset', 'srcset'))
-            #     i.replace_with(replace_attr(i,'data-lazy-srcset', 'srcset'))
-            #     i.replace_with(replace_attr(i,'lazy-srcset', 'srcset'))
-            #     i.replace_with(replace_attr(i,'data-original', 'src'))
-            # except Exception as e:
-            #     print(str(e))
-
-            # try:
-            #     a = re.findall("lazy.*=\".*\"",str(i))
-            #     if len(a)>0:
-            #         for i in a:
-            #             hhh= i.split(" ")[0].split("=")[-1]
-            #             if ".JPG" in hhh.upper() or ".PNG" in hhh.upper():
-            #                 i["src"] = hhh
-            #                 print(hhh)
-            #                 break
-            # except Exception as e:
-            #     print(str(e))
-
-            # if pre_link!= None or str(pre_link) == "br" and i!=None:
-            #     try:
-            #         if i.has_attr("src") and pre_link.has_attr("src") and i.has_attr("alt") and pre_link.has_attr("alt"):
-            #             if pre_link["src"] == i["src"] or pre_link["alt"] == i["alt"]:
-            #                 if "base64" in pre_link["src"]:
-            #                     aa = soup.new_tag("br")
-            #                     pre_link.replace_with(aa)
-            #                 else:
-            #                     aa = soup.new_tag("br")
-            #                     i.replace_with(aa)
-            #                     pre_link = i
-            #                     continue
-            #     except:
-            #         pass
-            # pre_link = i
-            # i['style'] ="width:100%"
             try:
                 if i.has_attr("src"):
                     if i["src"] in src_img:
@@ -404,8 +361,17 @@ def importcontent(content):
         else:
             url["Top10url"]= [{"link":content['user']["web_info"]["Website"] +"/"+ post['slug'],"name":content["title"]}] + url["Top10url"][1:10]
 
-        campaign_root.update_one({"_id":ObjectId( content['user']["campaign"]["_id"])},{"$set":{"Top10url":url["Top10url"]}})
-        keywords[content['user']['campaign']["WebsiteId"]].update_one({"_id":ObjectId( content['user']["keyword"]["_id"])},{"$set":{"status":"done","link":content['user']["web_info"]["Website"] +"/"+ post['slug']}})
+        params = {
+            "campaignid":content['user']["campaign"]["_id"]
+        }
+        a = requests.put(LINKURL + "apihidden/updatetop10url",params=params,json=url["Top10url"])
+        params  = {
+            "websiteid":content['user']['campaign']["WebsiteId"],
+            "keywordid":content['user']["keyword"]["_id"],
+            "status":"done",
+            "link":content['user']["web_info"]["Website"] +"/"+ post['slug']
+            }
+        a = requests.put(LINKURL + "apihidden/updatestatus",params = params)
     if res==None:
         print(response.content)
         print(res)
