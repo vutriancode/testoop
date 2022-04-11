@@ -45,7 +45,7 @@ def ColabSimple():
 
                       h = h+1
                       params = {
-                          "websiteid ":str(keyword["web_info"]["_id"]),
+                          "websiteid":str(keyword["web_info"]["_id"]),
                           "link":i
                       }
 
@@ -99,7 +99,7 @@ def ColabSimple():
                             done = ImportContents(article,a[0])
                             if done:
                               params = {
-                                "websiteid ":str(keyword["web_info"]["_id"]),
+                                "websiteid":str(keyword["web_info"]["_id"]),
                                 "link":a[0]["link"]
                               }
 
@@ -128,7 +128,7 @@ def ColabSimple():
                     i = i.split("#")[0]
                     h = h+1
                     params = {
-                        "websiteid ":str(keyword["web_info"]["_id"]),
+                        "websiteid":str(keyword["web_info"]["_id"]),
                         "link":i
                     }
 
@@ -181,7 +181,7 @@ def ColabSimple():
                           done = ImportContents(article,a[0])
                           if done:
                             params = {
-                                "websiteid ":str(keyword["web_info"]["_id"]),
+                                "websiteid":str(keyword["web_info"]["_id"]),
                                 "link":a[0]["link"]
                             }
 
