@@ -52,14 +52,11 @@ def ColabSimple():
         try:
           # h=h+1
           keyword = cl.find_one_and_delete({})
-          print(keyword["keyword"]["Keyword"])
           if keyword:
                 if keyword["campaign"]["language"] == "vi":
                   try:
                     h = 0
                     for i in search(keyword["keyword"]["Keyword"], tld="com.vn",start=0, num=20,stop=20,pause=1,lang="vi",country="vn"):
-                      if h ==0:
-                        print(i)
                       i = i.split("#")[0]
 
                       h = h+1
