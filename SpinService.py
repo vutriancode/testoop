@@ -81,9 +81,11 @@ class SpinService:
                         for jj in i.split("."):
                             jja  = get_response(jj,num_return_sequences,num_beams)[0]
                             iii = iii  + jja + "."
+
                         i = iii
-                    except:
-                        pass
+                        print(i)
+                    except Exception as e:
+                        print(e)
                     try:
                         words  = words + word_tokenize_en(i)
                     except:
