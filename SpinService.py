@@ -79,7 +79,7 @@ class SpinService:
                         num_return_sequences = 1
                         iii = ""
                         for jj in i.split("."):
-                            jja  = get_response(i,num_return_sequences,num_beams)[0]
+                            jja  = get_response(jj,num_return_sequences,num_beams)[0]
                             iii = iii  + jja + "."
                         i = iii
                     except:
