@@ -29,6 +29,7 @@ class SpinService:
     def __init__(self) -> None:
         with open("dataspin.p","rb") as file:
             self.dataspin = pickle.load(file)
+        nltk.download('omw-1.4')
         nltk.download('wordnet')
         nltk.download('punkt')
         nltk.download('averaged_perceptron_tagger')
