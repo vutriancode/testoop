@@ -170,8 +170,23 @@ def process_content(article,url):
             elem['alt'] =re.sub(re.compile("https://"+domain),url["web_info"]["Website"],elem['alt'])
         for elem in paper.find_all(text = re.compile("https://"+domain)):
             elem = elem.replace_with(re.sub(re.compile("https://"+domain),url["web_info"]["Website"],elem))
+
+
+        for elem in paper.find_all():
+            if elem.name not in ["p","h1","h2","h3","h4","img","table","tr","td","ul","li","ol"]:
+                elem.unwrap()
+        listp = [{"ptag":m,"keywords":"vutrian","language":"vi"} for m in paper.find_all(["p","li","h1","h2","h3","h4"])]
+        resultp= []
+        for i in listp:
+            if i["language"]== "vi":
+                resultp.append(spinService.spin_paragraph(i["ptag"],i["keywords"]))
+            else:
+                resultp.append(spinService.spin_paragraph_en(i["ptag"],i["keywords"]))
+        for k1,k2 in zip(listp,resultp):
+            k1["ptag"].replace_with(k2)
+
         heading_p = []
-        for heading in soup.find_all(["h1", "h2", "h3"]):
+        for heading in paper.find_all(["h1", "h2", "h3"]):
             for p in heading.find_all("p"):
                 heading_p.append(p)
         thepp =  paper.find_all('p')
@@ -223,20 +238,6 @@ def process_content(article,url):
                     thep[min(len(thep),3)].append(self_link_p_tag)
                 except:
                     pass
-
-        for elem in paper.find_all():
-            if elem.name not in ["p","h1","h2","h3","h4","img","table","tr","td","ul","li","ol"]:
-                elem.unwrap()
-        listp = [{"ptag":m,"keywords":"vutrian","language":"vi"} for m in paper.find_all(["p","li","h1","h2","h3","h4"])]
-        resultp= []
-        for i in listp:
-            if i["language"]== "vi":
-                resultp.append(spinService.spin_paragraph(i["ptag"],i["keywords"]))
-            else:
-                resultp.append(spinService.spin_paragraph_en(i["ptag"],i["keywords"]))
-        for k1,k2 in zip(listp,resultp):
-            k1["ptag"].replace_with(k2)
-
         if cate_link and cate_name:
             nguon = '<div style="margin-bottom:15px;margin-top:15px;"><p style="padding: 20px; background: #eaf0ff;">Source: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a> <br> Category: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a> </p></div>'.format(url["web_info"]["Website"]+'/',url["web_info"]["Website"],url["web_info"]["Website"],cate_link,cate_name,cate_name)
             nguon = BeautifulSoup(nguon,"html.parser")
