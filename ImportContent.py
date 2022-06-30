@@ -189,8 +189,6 @@ def process_content(article,url):
                         thep[int(len(thep)/2)].append(internal_link_p_tag1)
                     except:
                         pass
-
-
                 self_link_p_tag =  '<div style="margin-bottom:15px;margin-top:15px;"><p style="padding: 20px; background: #eaf0ff;">Bạn đang đọc: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a> </p></div>'.format(url["web_info"]["Website"]+'/'+self_url,article.title,article.title)
                 if internal_link2 and internal_link_title2:
                     internal_link_p_tag2 =  '<div style="margin-bottom:15px;margin-top:15px;"><p style="padding: 20px; background: #eaf0ff;">Xem thêm: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a></p></div>'.format(internal_link2,internal_link_title2,internal_link_title2)
@@ -199,9 +197,6 @@ def process_content(article,url):
                         thep[len(thep)-4].append(internal_link_p_tag2)
                     except:
                         pass
-
-
-
                 self_link_p_tag = BeautifulSoup(self_link_p_tag,"html.parser")
                 try:
                     thep[min(len(thep),3)].append(self_link_p_tag)
@@ -215,8 +210,6 @@ def process_content(article,url):
                         thep[int(len(thep)/2)].append(internal_link_p_tag1)
                     except:
                         pass
-
-
                 self_link_p_tag =  '<div style="margin-bottom:15px;margin-top:15px;"><p style="padding: 20px; background: #eaf0ff;">Reading: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a> </p></div>'.format(url["web_info"]["Website"]+'/'+self_url,article.title,article.title)
                 if internal_link2 and internal_link_title2:
                     internal_link_p_tag2 =  '<div style="margin-bottom:15px;margin-top:15px;"><p style="padding: 20px; background: #eaf0ff;">Read more: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a></p></div>'.format(internal_link2,internal_link_title2,internal_link_title2)
@@ -225,35 +218,33 @@ def process_content(article,url):
                         thep[len(thep)-4].append(internal_link_p_tag2)
                     except:
                         pass
-
-
-
                 self_link_p_tag = BeautifulSoup(self_link_p_tag,"html.parser")
                 try:
                     thep[min(len(thep),3)].append(self_link_p_tag)
                 except:
                     pass
 
-
-        if cate_link and cate_name:
-            nguon = '<div style="margin-bottom:15px;margin-top:15px;"><p style="padding: 20px; background: #eaf0ff;">Source: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a> <br> Category: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a> </p></div>'.format(url["web_info"]["Website"]+'/',url["web_info"]["Website"],url["web_info"]["Website"],cate_link,cate_name,cate_name)
-
-            nguon = BeautifulSoup(nguon,"html.parser")
-        else:
-            nguon = '<div style="margin-bottom:15px;margin-top:15px;"><p style="padding: 20px; background: #eaf0ff;">Source: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a>'.format(url["web_info"]["Website"]+'/',url["web_info"]["Website"],url["web_info"]["Website"])
-            nguon = BeautifulSoup(nguon,"html.parser")
-
-        paper.append(nguon)
-        listp = [{"ptag":m,"keywords":url["keyword"]["Keyword"],"language":url["campaign"]["language"]} for m in paper.find_all("p")]
+        for elem in paper.find_all():
+            if elem.name not in ["p","h1","h2","h3","h4","img","table","tr","td","ul","li","ol"]:
+                elem.unwrap()
+        listp = [{"ptag":m,"keywords":"vutrian","language":"vi"} for m in paper.find_all(["p","li","h1","h2","h3","h4"])]
         resultp= []
         for i in listp:
             if i["language"]== "vi":
                 resultp.append(spinService.spin_paragraph(i["ptag"],i["keywords"]))
             else:
                 resultp.append(spinService.spin_paragraph_en(i["ptag"],i["keywords"]))
-
         for k1,k2 in zip(listp,resultp):
             k1["ptag"].replace_with(k2)
+
+        if cate_link and cate_name:
+            nguon = '<div style="margin-bottom:15px;margin-top:15px;"><p style="padding: 20px; background: #eaf0ff;">Source: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a> <br> Category: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a> </p></div>'.format(url["web_info"]["Website"]+'/',url["web_info"]["Website"],url["web_info"]["Website"],cate_link,cate_name,cate_name)
+            nguon = BeautifulSoup(nguon,"html.parser")
+        else:
+            nguon = '<div style="margin-bottom:15px;margin-top:15px;"><p style="padding: 20px; background: #eaf0ff;">Source: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a>'.format(url["web_info"]["Website"]+'/',url["web_info"]["Website"],url["web_info"]["Website"])
+            nguon = BeautifulSoup(nguon,"html.parser")
+        paper.append(nguon)
+
         paper = str(paper)
         paper  = paper.replace("&lt;","<")
         paper  = paper.replace("&gt;",">")

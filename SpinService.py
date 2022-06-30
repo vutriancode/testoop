@@ -37,7 +37,9 @@ class SpinService:
 
 
     def spin_paragraph(self,p_paragraph1,keyword):
+        tag_name = p_paragraph1.name
         p_paragraph = [str(t) if not re.match(r'<[^>]+>', str(t)) else str(t) for t in p_paragraph1.contents]
+        p_paragraph = [" ".join(p_paragraph).replace("\xa0","")]
         word_splits = []
         try:
             for i in p_paragraph:
@@ -53,10 +55,11 @@ class SpinService:
                 for index_word in range(len(word_splits)):
                     if word_splits[index_word] in self.dataspin and word_splits[index_word].lower() not in keyword.lower():
                         word_splits[index_word] = random.choice(self.dataspin[word_splits[index_word]])
-                paragraph = " ".join(word_splits)
-                paragraph = soup(paragraph,"html.parser")
+                # paragraph = " ".join(word_splits)
+                output = soup("<{}>{}</{}>".format(tag_name," ".join(word_splits).replace(" .",".").replace(" ,",",").replace(" !","!"),tag_name),"html.parser")
 
-                return paragraph
+                return output
+
             else:
                 return p_paragraph1
         except:
@@ -64,8 +67,9 @@ class SpinService:
 
 
     def spin_paragraph_en(self,p_paragraph1,keyword):
-
+        tag_name = p_paragraph1.name
         p_paragraph = [str(t) if not re.match(r'<[^>]+>', str(t)) else str(t) for t in p_paragraph1.contents]
+        p_paragraph = [" ".join(p_paragraph).replace("\xa0","")]
 
         output = ""
 
@@ -85,7 +89,6 @@ class SpinService:
                                 iii = iii  + jja + " "
 
                         i = iii
-                        print(i)
                     except Exception as e:
                         print(e)
                     try:
@@ -99,37 +102,11 @@ class SpinService:
         #     print(e)
         #     return p_paragraph1
 
-        if words!=None:
-            if len(words)>0:
-                tagged = nltk.pos_tag(words)
-            for i in range(0,len(words)):
-                replacements = []
-                if (tagged[i][1] == 'NN' or tagged[i][1] == 'JJ' or tagged[i][1] == 'RB') and not re.match(r'<[^>]+>', words[i]):
-                    try:
-                        for syn in wordnet.synsets(words[i]):     
-    
-                    
-                            word_type = tagged[i][1][0].lower()
-                            if syn.name().find("."+word_type+"."):
-                                # extract the word only
-                                r = syn.name()[0:syn.name().find(".")]
-                                replacements.append(r)
-
-                    except Exception as e:
-                        pass
-
-                if len(replacements) > 0:
-                    # Choose a random replacement
-                    replacement = replacements[randint(0,len(replacements)-1)]
-                    output = output + " " + replacement.replace("_"," ")
-                else:
-                    # If no replacement could be found, then just use the
-                    # original word
-                    output = output + " " + words[i]
-        else:
+        if len(p_paragraph)==0:
             return p_paragraph1
-        output = soup(output,"html.parser")
+        output = soup("<{}>{}</{}>".format(tag_name," ".join(words).replace(" .",".").replace(" ,",",").replace(" !","!"),tag_name),"html.parser")
         return output
+
     def spin_title_vi(self,p_paragraph1,keyword):
         aaa = word_tokenize_vi(p_paragraph1)
 
