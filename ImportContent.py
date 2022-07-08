@@ -175,7 +175,7 @@ def process_content(article,url):
         for elem in paper.find_all():
             if elem.name not in ["p","h1","h2","h3","h4","img","table","tr","td","ul","li","ol"]:
                 elem.unwrap()
-        listp = [{"ptag":m,"keywords":"vutrian","language":"vi"} for m in paper.find_all(["p","li","h1","h2","h3","h4"])]
+        listp = [{"ptag":m,"keywords":url["keyword"]["Keyword"],"language":url["campaign"]["language"]} for m in paper.find_all(["p","li","h1","h2","h3","h4"])]
         resultp= []
         for i in listp:
             if i["language"]== "vi":

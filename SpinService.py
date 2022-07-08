@@ -70,7 +70,6 @@ class SpinService:
         tag_name = p_paragraph1.name
         p_paragraph = [str(t) if not re.match(r'<[^>]+>', str(t)) else str(t) for t in p_paragraph1.contents]
         p_paragraph = [" ".join(p_paragraph).replace("\xa0","")]
-
         output = ""
 
         # Get the list of words from the entire text
@@ -101,10 +100,10 @@ class SpinService:
         # except Exception as e:
         #     print(e)
         #     return p_paragraph1
-
         if len(p_paragraph)==0:
             return p_paragraph1
         output = soup("<{}>{}</{}>".format(tag_name," ".join(words).replace(" .",".").replace(" ,",",").replace(" !","!"),tag_name),"html.parser")
+        print(output.text)
         return output
 
     def spin_title_vi(self,p_paragraph1,keyword):
