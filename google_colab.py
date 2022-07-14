@@ -1,4 +1,3 @@
-
 from Settings import *
 
 # This is added so that many files can reuse the function get_database()

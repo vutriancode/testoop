@@ -178,7 +178,10 @@ def process_content(article,url):
         listp = [{"ptag":m,"keywords":url["keyword"]["Keyword"],"language":url["campaign"]["language"]} for m in paper.find_all(["p","li","h1","h2","h3","h4"])]
         resultp= []
         for i in listp:
-            if i["language"]== "vi":
+            if "<img" in str(i):
+                resultp.append(i)
+                continue
+            if i["language"] == "vi":
                 resultp.append(spinService.spin_paragraph(i["ptag"],i["keywords"]))
             else:
                 resultp.append(spinService.spin_paragraph_en(i["ptag"],i["keywords"]))
