@@ -8,3 +8,5 @@ underthesea
 nltk
 transformers
 sentencepiece
+youtube-search-python
+google

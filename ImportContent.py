@@ -28,7 +28,8 @@ from aiohttp import request
 from extract import ContentExtractor
 from lxml.html import tostring
 import re
-
+from youtubesearchpython import VideosSearch
+import random
 def no_accent_vietnamese(s):
     s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
     s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
@@ -65,11 +66,17 @@ def replace_attr(soup, from_attr: str, to_attr: str):
 
 def process_content(article,url):
     # print(url)
+        try:
+            videosSearch = VideosSearch(url["keyword"]["Keyword"], limit = 10)
+            id_youtube = random.choice(videosSearch.result()["result"])["id"]
+        except:
+            id_youtube =None
+    # # article.article_html = tostring(article.top_node,encoding="unicode")
         article.article_html = str(html.unescape(article.article_html))
 
-    # # article.article_html = tostring(article.top_node,encoding="unicode")
         soup = BeautifulSoup(article.article_html, 'html.parser')
         self_url = str(no_accent_vietnamese(url["keyword"]["Keyword"].replace("\r","")))+ ' ' + str(time.time()).split(".")[0]
+
         self_url = self_url.replace(" ","-")
         self_url = self_url.replace("--","-")
         self_url = self_url.replace(".","")
@@ -197,7 +204,15 @@ def process_content(article,url):
         for i in thepp:
             if i not in heading_p:
                 thep.append(i)
-
+        if id_youtube!=None:
+            youtube_html = '<iframe width="640" height="360" src="https://www.youtube.com/embed/'+id_youtube+'?controls=0"></iframe>'
+            youtube_html =  BeautifulSoup(youtube_html,"html.parser")
+            try:
+                thep[min(len(thep),3)].append(youtube_html)
+            except:
+                pass
+        else:
+            youtube_html = None
         if len(url["campaign"]["Top10url"])>0:
             if url["campaign"]["language"] == "vi":
                 if internal_link and internal_link_title:
@@ -208,6 +223,7 @@ def process_content(article,url):
                     except:
                         pass
                 self_link_p_tag =  '<div style="margin-bottom:15px;margin-top:15px;"><p style="padding: 20px; background: #eaf0ff;">Bạn đang đọc: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a> </p></div>'.format(url["web_info"]["Website"]+'/'+self_url,article.title,article.title)
+
                 if internal_link2 and internal_link_title2:
                     internal_link_p_tag2 =  '<div style="margin-bottom:15px;margin-top:15px;"><p style="padding: 20px; background: #eaf0ff;">Xem thêm: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a></p></div>'.format(internal_link2,internal_link_title2,internal_link_title2)
                     internal_link_p_tag2 = BeautifulSoup(internal_link_p_tag2,"html.parser")
@@ -248,7 +264,7 @@ def process_content(article,url):
             nguon = '<div style="margin-bottom:15px;margin-top:15px;"><p style="padding: 20px; background: #eaf0ff;">Source: <a target="_blank" href="{}" rel="bookmark" title="{}">{}</a>'.format(url["web_info"]["Website"]+'/',url["web_info"]["Website"],url["web_info"]["Website"])
             nguon = BeautifulSoup(nguon,"html.parser")
         paper.append(nguon)
-
+        print(url["web_info"]["Website"])
         paper = str(paper)
         paper  = paper.replace("&lt;","<")
         paper  = paper.replace("&gt;",">")
