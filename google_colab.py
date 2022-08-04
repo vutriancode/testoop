@@ -13,6 +13,8 @@ from configuration import Configuration
 from urllib.parse import urlparse
 from requests import get
 import time
+filename = get('http://172.28.0.2:9000/api/sessions').json()[0]['name']
+
 def replace_attr(soup, from_attr: str, to_attr: str):
     if from_attr in str(soup):
         soup[to_attr] = soup[from_attr]
@@ -28,7 +30,6 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',  # This is another valid field
 }
 def ColabSimple():
-      time.sleep(random.randint(10,20))
       a = requests.get(LINKURL + "apihidden/getkeyword")
       keyword=json.loads(a.content.decode("utf-8"))
       if keyword:
@@ -205,4 +206,6 @@ def ColabSimple():
             raise("too many")    
 while True:
   while True:
+    time.sleep(random.randint(10,20))
+    requests.post(LINKURL2+"ping-live?name="+filename)
     ColabSimple()
